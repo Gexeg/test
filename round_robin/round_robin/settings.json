@@ -1,0 +1,11 @@
+{"timer_limit":3,
+ "min_num_of_executors":5,
+ "max_num_of_executors":10,
+ "min_executor_productivity":1,
+ "max_executor_productivity":10,
+ "min_num_of_tasks":20,
+ "max_num_of_tasks":50,
+ "min_task_complexity":15,
+ "max_task_complexity":40
+}
+
