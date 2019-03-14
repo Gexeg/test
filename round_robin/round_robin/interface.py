@@ -68,6 +68,7 @@ class RoundRobinInterface:
             self.timer_on_pause = True
 
     def tick_tack(self):
+        """TODO: сделать нормальным отсчет, чтобы не сжирал первую секунду и не вис на нуле """
         if self.timer_on_pause is False:
             if self.current_time == 0:
                 #TODO: снять коммент, когда допилю раундробин
