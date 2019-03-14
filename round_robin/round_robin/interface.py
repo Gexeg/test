@@ -6,10 +6,15 @@ class RoundRobinInterface:
     def __init__(self):
         self.root = Tk()
         self.root.geometry('800x800')
+        self.settings = self.get_start_settings()
         self.is_settings_open = None
         self.settings_entries = None
+        self.current_time = int(self.settings['timer_limit'])
+        self.current_time_label = None
+        self.timer_on_pause = True
+        self.listboxes = {}
+        #self.round_robin = roundrobin.RoundRobin(self.settings)
         self.create_main_window_widgets()
-        self.settings = self.get_start_settings()
 
 
     def get_start_settings(self):
@@ -19,20 +24,62 @@ class RoundRobinInterface:
 
     def create_main_window_widgets(self):
         l5 = Label(text='Исполнитель + текущая задача').place(x=80, y=30)
-        lbox = Listbox().place(x=0, y=50, width=390, height=390)
+        current_exec_listbox = Listbox()
+        self.listboxes['current_exec_listbox'] = current_exec_listbox
+        current_exec_listbox.place(x=0, y=50, width=390, height=390)
         l4 = Label(text='Все задачи исполнителя').place(x=520, y=30)
-        l1 = Listbox().place(x=400, y=50, width=390, height=390)
+
+        completed_tasks = Listbox()
+        self.listboxes['completed_tasks'] = completed_tasks
+        completed_tasks.place(x=400, y=50, width=390, height=390)
+
         l7 = Label(text='Лог выполненных задач').place(x=80, y=480)
-        l3 = Listbox().place(x=0, y=500, width=390, height=390)
+        completed_tasks = Listbox()
+        self.listboxes['completed_tasks'] = completed_tasks
+        completed_tasks.place(x=0, y=500, width=390, height=390)
+
         frame = Frame().place(x=400, y=500, width=390, height=390)
-        new_button = Button(text='New').place(x=530, y=600, width=100, height=40)
-        pause_button = Button(text='Pause').place(x=530, y=650, width=100, height=40)
+        new_button = Button(text='New')
+        new_button.config(command=self.start_new_run)
+        new_button.place(x=470, y=550, width=100, height=40)
+        timer_label = Label(text='until next round').place(x=600, y=550)
+        self.current_time_label = Label(text=self.current_time)
+        self.current_time_label.place(x=640, y=570)
+        pause_button = Button(text='Pause')
+        pause_button.config(command=self.set_timer_on_pause)
+        pause_button.place(x=470, y=600, width=100, height=40)
         settings_button = Button(text='Settings')
         settings_button.config(command=self.open_settings)
-        settings_button.place(x=530, y=700, width=100, height=40)
+        settings_button.place(x=470, y=650, width=100, height=40)
 
-    def start_round_robin(self):
+    def update_current_executor_listbox(self):
         pass
+
+    def start_new_run(self):
+        #self.round_robin = roundrobin.RoundRobin(self.settings)
+        self.current_time = self.settings['timer_limit']
+        self.timer_on_pause = False
+
+    def set_timer_on_pause(self):
+        if self.timer_on_pause:
+            self.timer_on_pause = False
+            self.tick_tack()
+        else:
+            self.timer_on_pause = True
+
+    def tick_tack(self):
+        if self.timer_on_pause is False:
+            if self.current_time == 0:
+                #TODO: снять коммент, когда допилю раундробин
+                #self.round_robin.new_round()
+                self.current_time = int(self.settings['timer_limit'])
+                self.current_time_label.config(text=str(self.current_time))
+                self.update_current_executor_listbox()
+                return self.tick_tack()
+            self.current_time -= 1
+            self.current_time_label.config(text=str(self.current_time))
+            self.root.after(1000, self.tick_tack)
+
 
 
     def open_settings(self):
@@ -87,7 +134,6 @@ class RoundRobinInterface:
             self.is_settings_open.destroy()
             self.is_settings_open = None
             self.settings_entries = None
-
 
 
 a = RoundRobinInterface()

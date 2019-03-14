@@ -33,7 +33,7 @@ class ExecutorGenerator:
         self.__param_for_url_boy_names = '?nameOptions=boy_names'
         self.__param_for_url_girl_names = '?nameOptions=girl_names'
 
-    def get_executors_roster(self,number_of_names, num_boy_names=None):
+    def get_executors_roster(self, number_of_names, num_boy_names=None):
         executor_names = self.__generate_names(number_of_names, num_boy_names)
         executors = []
         for name in executor_names:
@@ -93,13 +93,27 @@ class ExecutorGenerator:
         return name_roster
 
 
-
 class ls2_test(unittest.TestCase):
 
     def setUp(self):
         pass
 
+    def test_set_new_productivity(self):
+        a = ExecutorGenerator(1, 10)
+        a.set_min_max_productivity(5, 15)
+        self.assertEqual(a._ExecutorGenerator__min_productivity, 5)
+        self.assertEqual(a._ExecutorGenerator__max_productivity, 15)
 
+    def test_create_executor(self):
+        a = ExecutorGenerator(1, 10)
+        exec_roster = a.get_executors_roster(10)
+        self.assertEqual(len(exec_roster), 10)
+
+    def test_executor(self):
+        pass
 
     def tearDown(self):
         pass
+
+
+unittest.main()
