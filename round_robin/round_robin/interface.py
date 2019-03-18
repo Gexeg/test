@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import messagebox
+import roundrobin
 import json
+
 
 class RoundRobinInterface:
     def __init__(self):
@@ -13,9 +15,8 @@ class RoundRobinInterface:
         self.current_time_label = None
         self.timer_on_pause = True
         self.listboxes = {}
-        #self.round_robin = roundrobin.RoundRobin(self.settings)
+        # self.round_robin = roundrobin.RoundRobin(self.settings)
         self.create_main_window_widgets()
-
 
     def get_start_settings(self):
         with open('start_settings.json') as settings_file:
@@ -23,26 +24,25 @@ class RoundRobinInterface:
             return data
 
     def create_main_window_widgets(self):
-        l5 = Label(text='Исполнитель + текущая задача').place(x=80, y=30)
+        Label(text='Исполнитель + текущая задача').place(x=80, y=30)
         current_exec_listbox = Listbox()
         self.listboxes['current_exec_listbox'] = current_exec_listbox
         current_exec_listbox.place(x=0, y=50, width=390, height=390)
-        l4 = Label(text='Все задачи исполнителя').place(x=520, y=30)
+        Label(text='Все задачи исполнителя').place(x=520, y=30)
 
         completed_tasks = Listbox()
         self.listboxes['completed_tasks'] = completed_tasks
         completed_tasks.place(x=400, y=50, width=390, height=390)
 
-        l7 = Label(text='Лог выполненных задач').place(x=80, y=480)
+        Label(text='Лог выполненных задач').place(x=80, y=480)
         completed_tasks = Listbox()
         self.listboxes['completed_tasks'] = completed_tasks
         completed_tasks.place(x=0, y=500, width=390, height=390)
 
-        frame = Frame().place(x=400, y=500, width=390, height=390)
         new_button = Button(text='New')
         new_button.config(command=self.start_new_run)
         new_button.place(x=470, y=550, width=100, height=40)
-        timer_label = Label(text='until next round').place(x=600, y=550)
+        Label(text='until next round').place(x=600, y=550)
         self.current_time_label = Label(text=self.current_time)
         self.current_time_label.place(x=640, y=570)
         pause_button = Button(text='Pause')
@@ -56,7 +56,7 @@ class RoundRobinInterface:
         pass
 
     def start_new_run(self):
-        #self.round_robin = roundrobin.RoundRobin(self.settings)
+        self.round_robin = roundrobin.RoundRobin(self.settings)
         self.current_time = self.settings['timer_limit']
         self.timer_on_pause = False
 
@@ -68,20 +68,16 @@ class RoundRobinInterface:
             self.timer_on_pause = True
 
     def tick_tack(self):
-        """TODO: сделать нормальным отсчет, чтобы не сжирал первую секунду и не вис на нуле """
         if self.timer_on_pause is False:
             if self.current_time == 0:
-                #TODO: снять коммент, когда допилю раундробин
-                #self.round_robin.new_round()
+                self.round_robin.new_round()
                 self.current_time = int(self.settings['timer_limit'])
-                self.current_time_label.config(text=str(self.current_time))
+                self.current_time_label.config(text=str(self.current_time + 1))
                 self.update_current_executor_listbox()
                 return self.tick_tack()
             self.current_time -= 1
-            self.current_time_label.config(text=str(self.current_time))
+            self.current_time_label.config(text=str(self.current_time + 1))
             self.root.after(1000, self.tick_tack)
-
-
 
     def open_settings(self):
         if self.is_settings_open is None:
@@ -103,7 +99,7 @@ class RoundRobinInterface:
             label.place(x=label_x, y=entry_label_y)
             entry = Entry(t, width=10)
             entry.insert(0, self.settings[i])
-            self.settings_entries[i]=entry
+            self.settings_entries[i] = entry
             entry.place(x=entry_x, y=entry_label_y)
             entry_label_y += 40
 
@@ -124,11 +120,13 @@ class RoundRobinInterface:
                     self.settings[setting] = self.settings_entries[setting].get()
                 except:
                     errors_counter += 1
-                    messagebox.showinfo("Настройка не изменена", "Пожалуйста, убедитесь, что вы ввели целое число в поле " + setting)
+                    messagebox.showinfo("Настройка не изменена",
+                                        "Пожалуйста, убедитесь, что вы ввели целое число в поле " + setting)
             if errors_counter == 0:
                 messagebox.showinfo("Успешно", "Настройки успешно изменены")
             else:
-                messagebox.showinfo("Не все настройки изменены", "Пожалйуста, убедитесь, что во все поля введены целые числа")
+                messagebox.showinfo("Не все настройки изменены",
+                                    "Пожалйуста, убедитесь, что во все поля введены целые числа")
 
     def close_settings(self):
         if self.is_settings_open:

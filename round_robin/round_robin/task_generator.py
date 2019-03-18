@@ -37,7 +37,7 @@ class TaskGenerator:
             tasks.append(new_task)
         return tasks
 
-    def set_min_max_complexity(self,min_complexity, max_complexity):
+    def set_min_max_complexity(self, min_complexity, max_complexity):
         self.__min_complexity = min_complexity
         self.__max_complexity = max_complexity
 
@@ -58,5 +58,3 @@ class TaskGenerator:
 
     def __generate_task_complexity(self):
         return randint(self.__min_complexity, self.__max_complexity)
-
-
