@@ -4,8 +4,7 @@ import unittest
 
 
 class Executor:
-    def __init__(self, name, productivity, executor_hash):
-        self.__executor_hash = executor_hash
+    def __init__(self, name, productivity):
         self.__name = name
         self.__productivity = productivity
         self.__task_queue = []
@@ -15,9 +14,6 @@ class Executor:
 
     def get_productivity(self):
         return self.__productivity
-
-    def get_executor_hash(self):
-        return self.__executor_hash
 
     def get_current_task(self):
         if self.__task_queue:
@@ -34,7 +30,7 @@ class Executor:
 
     def complete_task(self):
         if self.__task_queue:
-            self.__task_queue.pop()
+            return self.__task_queue.pop()
 
 
 class ExecutorGenerator:
@@ -50,18 +46,13 @@ class ExecutorGenerator:
         executors = []
         for name in executor_names:
             new_executor_productivity = self.__generate_productivity()
-            new_executor_hash = self.__generate_executor_hash(name)
-            print(new_executor_hash)
-            new_executor = Executor(name, new_executor_productivity, new_executor_hash)
+            new_executor = Executor(name, new_executor_productivity)
             executors.append(new_executor)
         return executors
 
     def set_min_max_productivity(self, min_productivity, max_productivity):
         self.__min_productivity = min_productivity
         self.__max_productivity = max_productivity
-
-    def __generate_executor_hash(self, value):
-        return value + str(getrandbits(128))[:randint(6, 10)]
 
     def __generate_names(self, number_of_names):
         num_boy_names = randint(0, number_of_names)
@@ -70,7 +61,18 @@ class ExecutorGenerator:
         if len(all_names) > number_of_names:
             while len(all_names) > number_of_names:
                 all_names.pop()
-        return all_names
+        final_names = []
+        for name in all_names:
+            if name not in final_names:
+                final_names.append(name)
+            else:
+                name_counter = 2
+                name_with_counter = name + '_' + str(name_counter)
+                while name_with_counter in final_names:
+                    name_counter += 1
+                    name_with_counter = name + '_' + str(name_counter)
+                final_names.append(name_with_counter)
+        return final_names
 
     def __generate_productivity(self):
         return randint(self.__min_productivity, self.__max_productivity)

@@ -8,26 +8,38 @@ class RoundRobin:
     def __init__(self, settings):
         self.__settings = settings
         self.__executors_roster = self.__get_executors_roster()
+        self.__executors_by_name = {}
+        self.__fill_executors_by_names()
         self.__task_roster = self.__get_tasks_roster()
         self.__distribute_tasks()
-        self.__current_round = 0
+        self.__current_round = 1
 
     def new_round(self):
+        completed_task = {'current_round': self.__current_round}
         for current_executor in self.__executors_roster:
             current_task = current_executor.get_current_task()
             if current_task:
                 current_task.reduce_complexity(current_executor.get_productivity())
                 if current_task.get_complexity() <= 0:
-                    current_executor.complete_task()
+                    completed_task[current_executor.get_name()] = current_executor.complete_task().get_name()
         if random.randint(0, 1) == 1:
             self.__swap_tasks()
         self.__current_round += 1
+        return completed_task
 
     def get_executors(self):
         return self.__executors_roster
 
     def get_current_round(self):
         return self.__current_round
+
+    def get_executors_by_name(self):
+        return self.__executors_by_name
+
+    def __fill_executors_by_names(self):
+        executors = self.get_executors()
+        for executor in executors:
+            self.__executors_by_name[executor.get_name()] = executor
 
     def __swap_tasks(self):
         stack1 = []
@@ -67,7 +79,7 @@ class RoundRobin:
                 else:
                     current_task = self.__task_roster.pop(0)
 
-
+"""
 class TestClass(unittest.TestCase):
 
     def setUp(self):
@@ -75,3 +87,4 @@ class TestClass(unittest.TestCase):
 
     def tearDown(self):
         pass
+"""
