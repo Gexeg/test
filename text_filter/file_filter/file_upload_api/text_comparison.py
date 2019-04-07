@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import xxhash
 from os import listdir
@@ -36,19 +37,7 @@ class TextComparer:
 
     def __canonize_text(self, text):
         stop_characters = ',!/.\'\n\t\"#@$%^&*()[]{}:;<>?'
-        stop_words = (u'это', u'как', u'так',
-                      u'и', u'в', u'над',
-                      u'к', u'до', u'не',
-                      u'на', u'но', u'за',
-                      u'то', u'с', u'ли',
-                      u'а', u'во', u'от',
-                      u'со', u'для', u'о',
-                      u'же', u'ну', u'вы',
-                      u'бы', u'что', u'кто',
-                      u'он', u'она', u'оно',
-                      u'вот', u'ну')
-        return [word for word in [word.strip(stop_characters) for word in text.lower().split()]
-                if word and (word not in stop_words)]
+        return [word for word in [word.strip(stop_characters) for word in text.lower().split()] if word]
 
     def __split_into_shingles(self, words_array):
         shingles = []
