@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import FileSerializer
 import text_comparison
+import os
 
 
 class FileView(APIView):
@@ -11,7 +12,7 @@ class FileView(APIView):
   def post(self, request, *args, **kwargs):
     file_serializer = FileSerializer(data=request.data)
     text_for_check = request.data['file'].read()
-    file_checker = text_comparison.TextComparer(5, '/home/gex/git/projects/text_originality/file_filter/media', 60)
+    file_checker = text_comparison.TextComparer(5, os.path.join(os.path.dirname(__file__),'..','media'), 60)
     similar_text_roster = file_checker.find_similar_text(text_for_check)
 
     if len(similar_text_roster) > 0:
