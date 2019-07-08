@@ -1,9 +1,9 @@
 import datetime
+import os
+import json
 import sys
 sys.path.append('/home/gex/git/projects/aiohttp_news')
 import main_v2
-import os
-import json
 
 class DataChecker():
     #Проверка файлов с новостями и комментариям и пути до них на корректность
