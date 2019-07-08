@@ -1,0 +1,53 @@
+{
+    "comments": [
+        {
+            "id": 1,
+            "news_id": 1,
+            "title": "comment_1",
+            "date": "1983-03-10T19:40:36",
+            "comment": "Comment"
+        },
+        {
+            "id": 2,
+            "news_id": 1,
+            "title": "comment_2",
+            "date": "1987-07-10T16:42:21",
+            "comment": "Comment"
+        },
+        {
+            "id": 3,
+            "news_id": 1,
+            "title": "comment_3",
+            "date": "2033-06-19T16:17:26",
+            "comment": "Comment"
+        },
+        {
+            "id": 4,
+            "news_id": 1,
+            "title": "comment_4",
+            "date": "2015-08-05T09:17:58",
+            "comment": "Comment"
+        },
+        {
+            "id": 5,
+            "news_id": 1,
+            "title": "comment_5",
+            "date": "2018-12-05T20:30:04",
+            "comment": "Comment"
+        },
+        {
+            "id": 6,
+            "news_id": 97,
+            "title": "comment_6",
+            "date": "1970-05-15T11:07:40",
+            "comment": "Comment"
+        },
+        {
+            "id": 7,
+            "news_id": 97,
+            "title": "comment_7",
+            "date": "2056-11-06T06:48:19",
+            "comment": "Comment"
+        } ],
+    "comments_count": 7
+}
