@@ -12,14 +12,12 @@ class NewsData():
         #поскольку новость может выйти в промежутке между запросами, актуальность новостей по дате проверяется в момент запроса
         #Дата сейчас возвращается в формате "%Y-%m-%d %H-%M%-%S" Если необходимо в качестве разделителя использовать именно "Т", то можно откомментить код
         actual_news = self.__news_df[self.__news_df['date'] < datetime.datetime.now()].copy()
-        actual_news['date'] = actual_news['date'].astype('str')
-        #actual_news['date'] = actual_news['date'].map(lambda x: datetime.datetime.strftime(x, '%Y-%m-%dT%H:%M:%S'))
+        actual_news['date'] = actual_news['date'].map(lambda x: datetime.datetime.strftime(x, '%Y-%m-%dT%H:%M:%S'))
         if news_id in set(actual_news.id.tolist()):
             comments = self.__comments_df[(self.__comments_df['news_id']==news_id)&(self.__comments_df['date'] < datetime.datetime.now())].copy()            
             actual_news = actual_news[actual_news['id']==news_id]
             result = actual_news.to_dict('records')[0]
-            comments['date'] = comments['date'].astype('str')
-            #comments['date'] = comments['date'].map(lambda x: datetime.datetime.strftime(x, '%Y-%m-%dT%H:%M:%S'))
+            comments['date'] = comments['date'].map(lambda x: datetime.datetime.strftime(x, '%Y-%m-%dT%H:%M:%S'))
             result['comments'] = comments.to_dict('records') 
             result['comments_count'] = len(comments)
             return result
@@ -29,8 +27,7 @@ class NewsData():
         #поскольку новость может выйти в промежутке между запросами, актуальность новостей по дате проверяется в момент запроса
         #Дата сейчас возвращается в формате "%Y-%m-%d %H-%M%-%S" Если необходимо в качестве разделителя использовать именно "Т", то можно откомментить код
         actual_news = self.__news_df[self.__news_df['date'] < datetime.datetime.now()].copy()
-        actual_news = self.__add_comments_count(actual_news)
-        #actual_news['date'] = actual_news['date'].map(lambda x: datetime.datetime.strftime(x, '%Y-%m-%dT%H:%M:%S'))
+        actual_news['date'] = actual_news['date'].map(lambda x: datetime.datetime.strftime(x, '%Y-%m-%dT%H:%M:%S'))
         actual_news['date'] = actual_news['date'].astype('str')
         result = {'news': actual_news.to_dict('records'),
         'news_count':len(actual_news) }
@@ -84,11 +81,11 @@ class NewsApi():
         response_obj = self.data.get_news_with_comments(news_id)
         if response_obj: 
             return web.Response(text=json.dumps(response_obj),status=200)
-        return web.Response(text='Не актуальная новость',status=404)
+        return web.Response(text='404',status=404)
 
 
-#path_to_news = '/home/gex/git/projects/aiohttp_news/news.json'
-#path_to_comments = '/home/gex/git/projects/aiohttp_news/comments.json'
-#storage = NewsData(path_to_news, path_to_comments)
-#api = NewsApi(storage)
-#web.run_app(api.app)
+path_to_news = '/home/gex/git/projects/aiohttp_news/news.json'
+path_to_comments = '/home/gex/git/projects/aiohttp_news/comments.json'
+storage = NewsData(path_to_news, path_to_comments)
+api = NewsApi(storage)
+web.run_app(api.app)
