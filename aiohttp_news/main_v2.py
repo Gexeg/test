@@ -10,7 +10,6 @@ class NewsData():
 
     def get_news_with_comments(self, news_id):
         #поскольку новость может выйти в промежутке между запросами, актуальность новостей по дате проверяется в момент запроса
-        #Дата сейчас возвращается в формате "%Y-%m-%d %H-%M%-%S" Если необходимо в качестве разделителя использовать именно "Т", то можно откомментить код
         actual_news = self.__news_df[self.__news_df['date'] < datetime.datetime.now()].copy()
         actual_news['date'] = actual_news['date'].map(lambda x: datetime.datetime.strftime(x, '%Y-%m-%dT%H:%M:%S'))
         if news_id in set(actual_news.id.tolist()):
@@ -84,8 +83,8 @@ class NewsApi():
         return web.Response(text='404',status=404)
 
 
-path_to_news = '/home/gex/git/projects/aiohttp_news/news.json'
-path_to_comments = '/home/gex/git/projects/aiohttp_news/comments.json'
-storage = NewsData(path_to_news, path_to_comments)
-api = NewsApi(storage)
-web.run_app(api.app)
+#path_to_news = '/home/gex/git/projects/aiohttp_news/news.json'
+#path_to_comments = '/home/gex/git/projects/aiohttp_news/comments.json'
+#storage = NewsData(path_to_news, path_to_comments)
+#api = NewsApi(storage)
+#web.run_app(api.app)

@@ -57,10 +57,10 @@ class PandasChecker():
         while end <= len(dates)-1:
             #на данный момент дата должна уже наступить
             if started:
-                assert dates[start] <= datetime.datetime.today(), 'Новость с неправильной датой'
+                assert dates[start] <= datetime.datetime.today(), 'Новость с неправильной датой %s'%(dates[start])
                 started = False
             assert dates[start] >= dates[end], 'Новости неправильно сортированы %s'%(dates)
-            assert dates[end] <= datetime.datetime.today(), 'Новость с неправильной датой'
+            assert dates[end] <= datetime.datetime.today(), 'Новость с неправильной датой %s'%(dates[end])
             start += 1
             end += 1
 
@@ -71,19 +71,19 @@ class PandasChecker():
         assert len(news_comment['comments'])==int(news_comment['comments_count']), 'Количество комментариев %s не совпадает с comments_count '%(news_comment['comments'])
         #Даты должны идти по возрастанию 
         dates = []
-        for news in news_comment['comments']:
-            date =  datetime.datetime.fromisoformat(news['date'])
-            date =  datetime.datetime.fromisoformat(news['date'])
+        for comment in news_comment['comments']:
+            date =  datetime.datetime.fromisoformat(comment['date'])
+            dates.append(date)
         start = 0
         end = 1
         started = True
         while end <= len(dates)-1:
             #на данный момент дата должна уже наступить
             if started:
-                assert dates[start] <= datetime.datetime.today(), 'Коммент с неправильной датой'
+                assert dates[start] <= datetime.datetime.today(), 'Новость с неправильной датой %s'%(dates[start])
                 started = False
             assert dates[start] >= dates[end], 'Комменты неправильно сортированы'
-            assert dates[end] <= datetime.datetime.today(), 'Коммент с неправильной датой'
+            assert dates[end] <= datetime.datetime.today(), 'Коммент с неправильной датой%s'%(dates[end])
             start += 1
             end += 1
 
