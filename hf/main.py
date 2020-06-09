@@ -3,7 +3,7 @@ import sys
 
 from logger import LOG
 from scan_directory import scan_directory
-from get_applicant_info import get_applicants_info
+from get_applicant_info import get_applicants_info, get_fio
 from send_info import ApplicantUploader
 
 
@@ -27,13 +27,27 @@ def main():
 
     try:
         uploader = ApplicantUploader(args.token)
-    except AssertionError as e:
-        LOG.error(f"Error durinng uploader initialization {type(e)}")
+    except AssertionError:
+        LOG.error(f"Error durinng uploader initialization")
         sys.exit(1)
 
     if files := scan_directory(args.base_dir, BASE_FILENAME):
         for applicant in get_applicants_info(files, args.row):
-            uploader.upload_applicant(applicant)
+            LOG.debug(f"Start uploading")
+            # загружаем резюме
+            resume_info = uploader.upload_file(applicant.file_path)
+
+            # формируем json для загрузки кандидата
+            body = uploader.collect_parsed_data(resume_info)
+            # полученные из .xlsx файла данные имеют приоритет
+            body.update(get_fio(applicant))
+            body.update({"money": applicant.salary})
+
+            # загружаем кандидата
+            if response := uploader.upload_applicant(body):
+                # устанавливаем его на вакансию
+                applicant_id = response.get("id")
+                uploader.set_vacancy(applicant, applicant_id)
 
 
 if __name__ == "__main__":

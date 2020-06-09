@@ -5,7 +5,7 @@ import json
 import sys
 
 from typing import Iterable, Optional, Union, Dict, Any
-from get_applicant_info import Applicant, normalize_salary, get_fio
+from get_applicant_info import Applicant, normalize_salary
 from logger import LOG
 
 
@@ -32,29 +32,50 @@ class ApplicantUploader():
         self.vacancies_statuses = self._get_vacancies_statuses()
         assert self.vacancies_statuses
 
-    def upload_applicant(self, applicant: Applicant):
+    def upload_file(self, fp: Optional[str]) -> Dict:
+        """ Загрузить файл кандидата, если есть.
+
+        :param fp: путь к файлу
+        :type fp: str
+        :return: распарсенные сервером данные
+        :rtype: Dict
+        """
+        if fp is None:
+            LOG.debug(f"The applicant has no resume-file.")
+            return {}
+        url = f"{self.endpoint}/account/{self.account_id}/upload"
+        headers = {
+            **self.base_headers,
+            "X-File-Parse": "true"
+        }
+        fn = os.path.basename(fp)
+        files = {"file": (fn, open(fp, "rb"), mimetypes.guess_type(fn)[0])}
+        LOG.debug(f"Uploading resume")
+        response = self._handle_request(
+            requests.post(url=url, headers=headers, files=files)
+        )
+        file_id = response.get("id")
+        LOG.debug(f"Success. File_id {file_id}")
+        return response
+
+    def upload_applicant(self, applicant_data: dict) -> Dict:
         """ Загрузить кандидата в базу.
 
-        :param applicant: датакласс кандидата
-        :type applicant: Applicant
+        :param applicant_data: общие данные о кандидате
+        :type applicant_data: dict
+        :return: ответ сервера
+        :rtype: dict
         """
-        # загрузка в базу прикрепленного файла
-        # при загрузке в базу сервер возвращает распознанные поля в ответе
-        LOG.debug(f"Start uploading")
-        resume_info = self._upload_file(applicant.file_path)
-        
-        # загрузка кандидата в базу
-        body = self._collect_parsed_data(resume_info)
-        # полученные из .xlsx файла данные имеют приоритет
-        body.update(get_fio(applicant))
-        body.update({"money": applicant.salary})
+        url = f"{self.endpoint}/account/{self.account_id}/applicants"
+        LOG.debug(f"Start uploading applicant to db")
+        response = self._handle_request(
+            requests.post(url=url, headers=self.base_headers, json=applicant_data)
+        )
+        applicant_id = response.get("id")
+        LOG.debug(f"Success. Applicant id {applicant_id}")
+        return response
 
-        if response := self._upload_to_db(body):
-            # установка вакансии
-            applicant_id = response.get("id")
-            self._set_vacancy(applicant, applicant_id)
-
-    def _set_vacancy(self, applicant: Applicant, applicant_id: int) -> Dict:
+    def set_vacancy(self, applicant: Applicant, applicant_id: int) -> Dict:
         """ Установить кандидата на вакансию.
 
         :param applicant: информация о кандидате из .xlsx файла
@@ -81,50 +102,7 @@ class ApplicantUploader():
             LOG.debug(f"Success. Applicant- vacancy id {applicant_vacancy_id}")
             return response
 
-    def _upload_to_db(self, applicant_data: dict) -> Dict:
-        """ Загрузить кандидата в базу.
-
-        :param applicant_data: общие данные о кандидате
-        :type applicant_data: dict
-        :return: ответ сервера
-        :rtype: dict
-        """
-        url = f"{self.endpoint}/account/{self.account_id}/applicants"
-        LOG.debug(f"Start uploading applicant to db")
-        response = self._handle_request(
-            requests.post(url=url, headers=self.base_headers, json=applicant_data)
-        )
-        applicant_id = response.get("id")
-        LOG.debug(f"Success. Applicant id {applicant_id}")
-        return response
-
-    def _upload_file(self, fp: Optional[str]) -> Dict:
-        """ Загрузить файл кандидата, если есть.
-
-        :param fp: путь к файлу
-        :type fp: str
-        :return: распарсенные сервером данные
-        :rtype: Dict
-        """
-        if fp is None:
-            LOG.debug(f"The applicant has no resume-file.")
-            return {}
-        url = f"{self.endpoint}/account/{self.account_id}/upload"
-        headers = {
-            **self.base_headers,
-            "X-File-Parse": "true"
-        }
-        fn = os.path.basename(fp)
-        files = {"file": (fn, open(fp, "rb"), mimetypes.guess_type(fn)[0])}
-        LOG.debug(f"Uploading resume")
-        response = self._handle_request(
-            requests.post(url=url, headers=headers, files=files)
-        )
-        file_id = response.get("id")
-        LOG.debug(f"Success. File_id {file_id}")
-        return response
-
-    def _collect_parsed_data(self, data: dict) -> Dict:
+    def collect_parsed_data(self, data: dict) -> Dict:
         """ Собрать распознанные данные с загруженного файла.
 
         :param data: ответ сервера
@@ -191,11 +169,11 @@ class ApplicantUploader():
         try:
             assert response.ok
             return response.json()
-        except AssertionError as e:
+        except AssertionError:
             LOG.error(f"Error response status code")
             LOG.error(f"{response.status_code} - {response.text}")
             sys.exit(1)
-        except json.JSONDecodeError as e:
+        except json.JSONDecodeError:
             LOG.error(f"Not valid JSON")
             sys.exit(1)
 
