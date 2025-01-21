@@ -8,9 +8,10 @@
 make devup
 ```
 
+А можно посмотреть по ссылке:
+https://test-clou.onrender.com/
 
-
-На десктопе выглядит как-то так:
+Ну или просто скриншоты. На десктопе выглядит как-то так:
 
 ![скрин с десктопа](https://github.com/Gexeg/test/blob/master/some_dashboard/readme_pics/image.png)
 
