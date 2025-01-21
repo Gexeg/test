@@ -4,7 +4,16 @@
 Фронт собирается без билда на htmx + chartjs + bootstrap и раздается через статику.
 
 Всё собрано в докер, запускается `make devup` -> висит на 8000 порте.
-
 ```bash
 make devup
 ```
+
+
+
+На десктопе выглядит как-то так:
+
+![скрин с десктопа](https://github.com/Gexeg/test/blob/master/some_dashboard/readme_pics/image.png)
+
+На мобилке так:
+
+![скрин с мобилки](https://github.com/Gexeg/test/blob/master/some_dashboard/readme_pics/image-1.png)
