@@ -1,0 +1,23 @@
+data
+deploy/docker-compose.override.yml
+__pycache__
+.mypy_cache
+.venv
+.python-version
+.ruff_cache
+backend/config/local.ini
+artefacts
+
+
+# local env files
+.env.local
+.env.*.local
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

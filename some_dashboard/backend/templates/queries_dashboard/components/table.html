@@ -1,0 +1,22 @@
+<div id="queries-table" class="table-responsive">
+    <h3>{{ table.title }}</h3>
+    <table class="table table-striped table-hover table-bordered align-middle text-left">
+        <thead class="table-dark">
+            <tr>
+                {% for header_row in table['headers'] %}
+                <th>{{ header_row }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table['rows'] %}
+            <tr>
+                {% for value in row%}
+                <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>

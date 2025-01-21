@@ -1,0 +1,46 @@
+<div class="row">
+    <!-- Карточка для графика -->
+    <div class="col-md-9 col-lg-9 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Query Durations</h5>
+                <div class="chart">
+                    <canvas id='queries_chart' style="min-height: 500px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Карточка для общей информации -->
+    <div class="col-md-3 col-lg-3 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Total Information</h5>
+                <p><strong>Total Requests:</strong> 12,345</p>
+                <p><strong>Requests Above Critical Threshold:</strong> 678</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <!-- Карточка для таблицы -->
+    <div class="col-md-12 col-lg-12 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="btn-group gap-1">
+                        <button class="btn btn-secondary" hx-get="/slowest_queries" hx-target="#queries-table"
+                            hx-swap="innerHTML">slowest</button>
+                        <button class="btn btn-secondary" hx-get="/popular_queries" hx-target="#queries-table"
+                        hx-swap="innerHTML">popular</button>
+                    </div>
+                </div>
+                {% include "queries_dashboard/components/table.html" with context %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script defer>
+    render_query_line_chart({{ chart_data | safe }}, 'queries_chart');
+</script>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Monitoring Dashboard</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <style>
+      body,html {
+        height: 100%;
+      }
+      @media (min-width: 576px) {
+      .sidebar {
+        min-height: 100vh; /* Использование vh для высоты */
+      }}
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid h-100">
+        <div class=" row">
+          <!-- Сайдбар -->
+          <div class="sidebar col-12 col-md-3 col-lg-2 bg-dark text-white p-3">
+            <h2 class="text-center">Дашборд</h2>
+            <hr>
+            <button class="btn btn-primary w-100 mb-2" hx-get="/queries_dashboard" hx-target="#dynamic-content-block"
+                hx-swap="innerHTML">Мониторинг запросов</button>
+                <button class="btn btn-primary w-100 mb-2" hx-get="/sales_dashboard" hx-target="#dynamic-content-block"
+                    hx-swap="innerHTML">Продажи</button>
+          </div>
+            <!-- Подгружаемый контент -->
+            <div class="col-md-9 col-lg-10 p-4" id="dynamic-content-block">
+                <h2>Добро пожаловать</h2>
+                <p>Выберите пункт меню, чтобы увидеть содержимое.</p>
+            </div>
+        </div>
+      </div>
+
+    <script src="/static/js/libraries/htmx.min.js" defer></script>
+    <script src="/static/js/libraries/chart.min.js" defer></script>
+    <script src="/static/js/charts_builders.js" defer ></script>
+</body>
+</html>
